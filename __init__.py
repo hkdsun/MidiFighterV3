@@ -9,7 +9,7 @@ from ableton.v3.control_surface import (
     ControlSurfaceSpecification,
     create_skin,
 )
-from ableton.v3.control_surface.components import SimpleDeviceNavigationComponent
+from ableton.v3.control_surface.components import SimpleDeviceNavigationComponent, SessionNavigationComponent, SessionRingComponent, SessionComponent
 
 from . import midifighterv3
 
@@ -19,8 +19,13 @@ logger = logging.getLogger("HK-DEBUG")
 def create_mappings(control_surface):
     mappings = {}
     mappings["Transport"] = dict(
+        play_toggle_button="play_button",
         stop_button="stop_button",
-        play_button="play_button",
+        metronome_button="metronome_button",
+        # arrangement_position_encoder="encoder_7"
+    )
+    mappings["Recording"] = dict(
+        arrangement_record_button="arrangement_record_button",
     )
     mappings["Mixer"] = dict(
         target_track_solo_button="solo_button",
@@ -30,6 +35,8 @@ def create_mappings(control_surface):
         target_track_pan_control="pan_encoder",
         target_track_send_a_control="send_a_encoder",
         target_track_send_b_control="send_b_encoder",
+        prehear_volume_control="cue_volume_encoder",
+        master_track_volume_control="master_volume_encoder",
     )
     mappings["Device"] = dict(
         device_on_off_button="device_on_off_button",
@@ -41,6 +48,12 @@ def create_mappings(control_surface):
     mappings["DeviceNavigation"] = dict(
         scroll_encoder="device_navigation_encoder",
     )
+    mappings["SessionNavigation"] = dict(
+        page_up_button="lh_button_1",
+        page_down_button="lh_button_2",
+        page_left_button="rh_button_1",
+        page_right_button="rh_button_2",
+    )
     return mappings
 
 class Specification(ControlSurfaceSpecification):
@@ -50,6 +63,7 @@ class Specification(ControlSurfaceSpecification):
     component_map = {
         'DeviceNavigation': SimpleDeviceNavigationComponent,
         'TrackNavigation': midifighterv3.TrackNavigationComponent,
+        'SessionNavigation': SessionNavigationComponent,
     }
 
 def create_instance(c_instance):
