@@ -1,6 +1,9 @@
 # Midi Fighter Control Surface
 
-Ableton control written using `ableton.v3.control_surface` APIs.
+This is a custom [Midi Fighter Twister](https://www.midifighter.com/) Ableton Live control surface written using the latest `ableton.v3.control_surface` APIs.
+
+It has been tested against Live 12.
+
 
 # Author
 
