@@ -1,6 +1,6 @@
 from ableton.v3.control_surface.elements import SimpleColor
 
-LED_CHANNEL = 0
+LED_CHANNEL = 3
 
 
 class Rgb:
