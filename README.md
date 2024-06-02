@@ -4,6 +4,8 @@ This is a custom [Midi Fighter Twister](https://www.midifighter.com/) Ableton Li
 
 It has been tested against Live 12.
 
+![image](https://github.com/hkdsun/MidiFighterV3/assets/6955854/39ec1a2f-0c9b-4892-9c92-ecdb2ee2caca)
+
 
 # Author
 
