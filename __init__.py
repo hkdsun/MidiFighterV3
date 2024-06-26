@@ -2,16 +2,19 @@ import importlib
 import logging
 import os
 import traceback
+import Live
 
-from ableton.v2.base import listens
+from ableton.v2.base import listens, find_if
 from ableton.v3.control_surface import (
     ControlSurface,
     ControlSurfaceSpecification,
     create_skin,
 )
-from ableton.v3.control_surface.components import SimpleDeviceNavigationComponent, SessionNavigationComponent, SessionRingComponent, SessionComponent
+from ableton.v3.control_surface.components import SessionNavigationComponent, SessionRingComponent, SessionComponent
 
 from . import midifighterv3
+from ableton.v3.live import liveobj_valid
+
 
 logger = logging.getLogger("HK-DEBUG")
 
@@ -35,12 +38,13 @@ def create_mappings(control_surface):
         target_track_pan_control="pan_encoder",
         target_track_send_a_control="send_a_encoder",
         target_track_send_b_control="send_b_encoder",
+        target_track_macro_controls="device_controls",
         prehear_volume_control="cue_volume_encoder",
         master_track_volume_control="master_volume_encoder",
     )
     mappings["Device"] = dict(
         device_on_off_button="device_on_off_button",
-        parameter_controls="device_controls",
+        # parameter_controls="device_controls",
     )
     mappings["TrackNavigation"] = dict(
         scroll_encoder="track_navigation_encoder",
@@ -61,9 +65,10 @@ class Specification(ControlSurfaceSpecification):
     control_surface_skin = create_skin(skin=midifighterv3.Skin)
     create_mappings_function = create_mappings
     component_map = {
-        'DeviceNavigation': SimpleDeviceNavigationComponent,
+        'DeviceNavigation': midifighterv3.SimpleDeviceNavigationComponent,
         'TrackNavigation': midifighterv3.TrackNavigationComponent,
         'SessionNavigation': SessionNavigationComponent,
+        'Mixer': midifighterv3.MixerComponent,
     }
 
 def create_instance(c_instance):
