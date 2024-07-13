@@ -1,5 +1,7 @@
 from __future__ import absolute_import, print_function, unicode_literals
 from ableton.v3.control_surface.components import MixerComponent as MixerComponentBase
+from ableton.v3.control_surface.controls import EncoderControl
+
 from ableton.v3.base import listens
 from .track_macro import TrackMacroComponent
 from functools import partial
@@ -8,9 +10,13 @@ logger = logging.getLogger("HK-DEBUG")
 
 
 class MixerComponent(MixerComponentBase):
+    filter_control = EncoderControl()
+    lfo_control = EncoderControl()
+
     def __init__(self, *a, **k):
         self._track_macros = TrackMacroComponent()
         (super(MixerComponent, self).__init__)(*a, **k)
+
         self._MixerComponent__on_target_track_changed.subject = self._target_track
         self.__on_target_track_changed() if self._target_track else None
 
@@ -22,4 +28,6 @@ class MixerComponent(MixerComponentBase):
 
     @listens('target_track')
     def __on_target_track_changed(self):
-        self._track_macros.set_track(self._target_track.target_track)
+        logger.info("Target track changed")
+        flt_tracks = list(filter((lambda t: "[FLT]" in t.name), self.song.tracks))
+        self._track_macros.set_track(self._target_track.target_track, flt_tracks=flt_tracks)
