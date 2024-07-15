@@ -13,4 +13,4 @@ class Elements(ElementsBase):
         self.add_encoder(5, "send_b_encoder", channel=0, msg_type=MIDI_CC_TYPE, is_feedback_enabled=True)
         self.add_encoder(6, "send_c_encoder", channel=0, msg_type=MIDI_CC_TYPE, is_feedback_enabled=True)
         self.add_encoder(7, "send_d_encoder", channel=0, msg_type=MIDI_CC_TYPE, is_feedback_enabled=True)
-        self.add_encoder_matrix([[8, 9, 10, 11]], "looper_volume_controls", is_feedback_enabled=True)
+        self.add_encoder_matrix([[8, 9, 10, 11, 2]], "looper_volume_controls", is_feedback_enabled=True)

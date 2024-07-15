@@ -14,7 +14,7 @@ from ableton.v3.control_surface.components import SessionNavigationComponent, Se
 
 from . import midifighterv3
 from ableton.v3.live import liveobj_valid
-
+from functools import partial
 
 logger = logging.getLogger("HK-DEBUG")
 
@@ -46,11 +46,12 @@ def create_mappings(control_surface):
 class Specification(ControlSurfaceSpecification):
     elements_type = midifighterv3.Elements
     control_surface_skin = create_skin(skin=midifighterv3.Skin)
+    session_ring_component_type = midifighterv3.LooperSessionRingComponent
     create_mappings_function = create_mappings
     component_map = {
         'DeviceNavigation': midifighterv3.SimpleDeviceNavigationComponent,
         'TrackNavigation': midifighterv3.TrackNavigationComponent,
-        'Mixer': midifighterv3.MixerComponent,
+        'Mixer': partial(midifighterv3.MixerComponent, channel_strip_component_type=midifighterv3.LooperChannelStripComponent),
         'ViewCycle': midifighterv3.ViewCycleComponent,
     }
 
