@@ -19,19 +19,9 @@ logger = logging.getLogger("HK-DEBUG")
 NavDirection = Live.Application.Application.View.NavDirection
 
 class SimpleDeviceNavigationComponent(ScrollComponent, Renderable, Scrollable):
-    toggle_instrument_button = ButtonControl()
-
     def __init__(self, name='Device_Navigation', *a, **k):
         (super().__init__)(a, name=name, scroll_skin_name="Device.Navigation", **k)
         self._previously_appointed_device = None
-
-    @toggle_instrument_button.pressed
-    def _toggle_instrument(self, _button):
-        # find the first instrument in the track and open its preferences window
-        devices = list(find_instrument_devices(self.song.view.selected_track))
-        if devices:
-            logger.info(f"Found instrument device: {devices[0].name}")
-
 
     def can_scroll_up(self):
         return True
