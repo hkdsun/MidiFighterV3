@@ -31,8 +31,6 @@ def create_mappings(control_surface):
         target_track_send_c_control="send_c_encoder",
         target_track_send_d_control="send_d_encoder",
         target_track_macro_controls="device_controls",
-    )
-    mappings["Mixer"] = dict(
         volume_controls="looper_volume_controls",
     )
     mappings["TrackNavigation"] = dict(
