@@ -39,7 +39,7 @@ class TrackNavigationComponent(ScrollComponent, Scrollable):
         new_track = all_tracks[index - 1]
         self.song.view.selected_track = new_track
         self.reset_view()
-        self.manage_instruments_fold_state(new_track, 1)
+        # self.manage_instruments_fold_state(new_track, 1)
 
     def scroll_down(self):
         selected_track = self.song.view.selected_track
@@ -48,4 +48,4 @@ class TrackNavigationComponent(ScrollComponent, Scrollable):
         new_track = all_tracks[index + 1]
         self.song.view.selected_track = new_track
         self.reset_view()
-        self.manage_instruments_fold_state(new_track, 0)
+        # self.manage_instruments_fold_state(new_track, 0)
