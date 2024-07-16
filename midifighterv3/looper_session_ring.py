@@ -4,7 +4,7 @@ from ableton.v3.control_surface.components import SessionRingComponent as Sessio
 def looper_tracks_to_use(song):
     looper_tracks = []
     for track in song.tracks:
-        if track.name.startswith("Loop"):
+        if track.name.startswith("Loop "):
             looper_tracks.append(track)
 
     for track in song.tracks:
@@ -12,7 +12,7 @@ def looper_tracks_to_use(song):
             looper_tracks.append(track)
 
     if len(looper_tracks) == 0:
-        looper_tracks = song.tracks[:1]
+        return song.visible_tracks
     return looper_tracks
 
 class LooperSessionRingComponent(SessionRingComponentBase):

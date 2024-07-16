@@ -22,8 +22,6 @@ class TrackMacroComponent(Component):
         self._parameter_controls = None
 
         self._filter_tracks = None
-        self._filter_controls = None
-        self._lfo_controls = None
 
     def disconnect(self):
         if self._parameter_controls != None:
@@ -56,13 +54,10 @@ class TrackMacroComponent(Component):
         self._parameter_controls = controls
         self.update()
 
-    def set_filter_controls(self, controls):
-        self._filter_controls = controls
-        self.update()
-
-    def set_lfo_controls(self, controls):
-        self._lfo_controls = controls
-        self.update()
+    def reset_device_parameters(self):
+        if self._parameter_controls != None:
+            for control in self._parameter_controls:
+                control.reset()
 
     def update(self):
         super(TrackMacroComponent, self).update()
@@ -72,11 +67,6 @@ class TrackMacroComponent(Component):
                     self._parameter_controls.reset()
                     for control, parameter in zip(self._parameter_controls, self._device.parameters[1:]):
                         control.connect_to(parameter)
-
-            # if self._filter_tracks != None:
-            #     if self._filter_controls != None:
-            #         for control, track in zip(self._filter_controls, self._filter_tracks):
-            #             control.connect_to(track.mixer_device.volume)
 
     def _on_devices_changed(self):
         self._device = None

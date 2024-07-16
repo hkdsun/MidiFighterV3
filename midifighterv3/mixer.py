@@ -1,6 +1,6 @@
 from __future__ import absolute_import, print_function, unicode_literals
 from ableton.v3.control_surface.components import MixerComponent as MixerComponentBase
-from ableton.v3.control_surface.controls import EncoderControl
+from ableton.v3.control_surface.controls import ButtonControl
 
 from ableton.v3.base import listens
 from .track_macro import TrackMacroComponent
@@ -10,8 +10,7 @@ logger = logging.getLogger("HK-DEBUG")
 
 
 class MixerComponent(MixerComponentBase):
-    filter_control = EncoderControl()
-    lfo_control = EncoderControl()
+    reset_parameters_button = ButtonControl()
 
     def __init__(self, *a, **k):
         self._track_macros = TrackMacroComponent()
@@ -29,5 +28,9 @@ class MixerComponent(MixerComponentBase):
     @listens('target_track')
     def __on_target_track_changed(self):
         logger.info("Target track changed")
-        flt_tracks = list(filter((lambda t: "[FLT]" in t.name), self.song.tracks))
-        self._track_macros.set_track(self._target_track.target_track, flt_tracks=flt_tracks)
+        self._track_macros.set_track(self._target_track.target_track)
+
+    @reset_parameters_button.pressed
+    def reset_parameters(self, _):
+        logger.info("Resetting parameters")
+        # self._track_macros.reset_device_parameters()

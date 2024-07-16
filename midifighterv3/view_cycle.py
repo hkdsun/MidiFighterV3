@@ -47,7 +47,7 @@ class ViewCycleComponent(Component):
 
     def fold_songs(self, song):
         for track in song.tracks:
-            if track.is_foldable:
+            if track.is_foldable and track.name != "Loopers":
                 track.fold_state = 1
 
     @view_cycle_button.pressed

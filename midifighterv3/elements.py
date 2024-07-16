@@ -4,6 +4,7 @@ from functools import partial
 class Elements(ElementsBase):
     def __init__(self, *a, **k):
         super().__init__(*a, **k)
+        self.add_button(0, "Reset_Parameters_Button", channel=1, msg_type=MIDI_CC_TYPE)
         self.add_button(3, "View_Cycle_Button", channel=1, msg_type=MIDI_CC_TYPE)
         self.add_button(6, "Play_Button", channel=1, msg_type=MIDI_CC_TYPE)
         self.add_button(7, "Stop_Button", channel=1, msg_type=MIDI_CC_TYPE)
