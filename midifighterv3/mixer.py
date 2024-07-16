@@ -10,27 +10,15 @@ logger = logging.getLogger("HK-DEBUG")
 
 
 class MixerComponent(MixerComponentBase):
-    reset_parameters_button = ButtonControl()
-
     def __init__(self, *a, **k):
         self._track_macros = TrackMacroComponent()
         (super(MixerComponent, self).__init__)(*a, **k)
 
         self._MixerComponent__on_target_track_changed.subject = self._target_track
         self.__on_target_track_changed() if self._target_track else None
-
-    def __getattr__(self, name):
-        if name == 'set_target_track_macro_controls':
-            return partial(self._track_macros.set_parameter_controls)
-        else:
-            return super(MixerComponent, self).__getattr__(name)
+        self.set_target_track_macro_controls = partial(self._track_macros.set_parameter_controls)
 
     @listens('target_track')
     def __on_target_track_changed(self):
         logger.info("Target track changed")
         self._track_macros.set_track(self._target_track.target_track)
-
-    @reset_parameters_button.pressed
-    def reset_parameters(self, _):
-        logger.info("Resetting parameters")
-        # self._track_macros.reset_device_parameters()

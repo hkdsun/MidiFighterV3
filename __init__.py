@@ -32,7 +32,7 @@ def create_mappings(control_surface):
         target_track_send_d_control="send_d_encoder",
         target_track_macro_controls="device_controls",
         volume_controls="looper_volume_controls",
-        reset_parameters_button="reset_parameters_button",
+        reset_channel_buttons="reset_channel_buttons",
     )
     mappings["TrackNavigation"] = dict(
         scroll_encoder="track_navigation_encoder",

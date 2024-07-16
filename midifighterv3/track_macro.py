@@ -21,8 +21,6 @@ class TrackMacroComponent(Component):
         self._device = None
         self._parameter_controls = None
 
-        self._filter_tracks = None
-
     def disconnect(self):
         if self._parameter_controls != None:
             self._parameter_controls.reset()
@@ -35,8 +33,7 @@ class TrackMacroComponent(Component):
     def on_enabled_changed(self):
         self.update()
 
-    def set_track(self, track, flt_tracks=None):
-        self._filter_tracks = flt_tracks
+    def set_track(self, track):
         if self._track != None:
             self._track.remove_devices_listener(self._on_devices_changed)
             if self._device != None:
@@ -53,11 +50,6 @@ class TrackMacroComponent(Component):
                 self._parameter_controls.reset()
         self._parameter_controls = controls
         self.update()
-
-    def reset_device_parameters(self):
-        if self._parameter_controls != None:
-            for control in self._parameter_controls:
-                control.reset()
 
     def update(self):
         super(TrackMacroComponent, self).update()
