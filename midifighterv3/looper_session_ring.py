@@ -8,7 +8,7 @@ def looper_tracks_to_use(song):
             looper_tracks.append(track)
 
     for track in song.tracks:
-        if track.name == "Vocals In":
+        if track.name == "Vocal In":
             looper_tracks.append(track)
 
     if len(looper_tracks) == 0:

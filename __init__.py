@@ -21,10 +21,6 @@ logger = logging.getLogger("HK-DEBUG")
 
 def create_mappings(control_surface):
     mappings = {}
-    mappings["Transport"] = dict(
-        play_toggle_button="play_button",
-        stop_button="stop_button",
-    )
     mappings["Mixer"] = dict(
         target_track_send_a_control="send_a_encoder",
         target_track_send_b_control="send_b_encoder",

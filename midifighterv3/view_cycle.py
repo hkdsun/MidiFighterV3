@@ -7,7 +7,7 @@
 from __future__ import absolute_import, print_function, unicode_literals
 from ableton.v3.live import liveobj_changed, liveobj_valid
 from ableton.v3.control_surface import Component
-from ableton.v3.control_surface.controls import ButtonControl
+from ableton.v3.control_surface.controls import PlayableControl
 import Live
 import logging
 import time
@@ -15,7 +15,7 @@ import time
 logger = logging.getLogger("HK-DEBUG")
 
 class ViewCycleComponent(Component):
-    view_cycle_button = ButtonControl()
+    view_cycle_button = PlayableControl(mode=PlayableControl.Mode.playable_and_listenable)
 
     valid_views = [
         # clip, device, browser
