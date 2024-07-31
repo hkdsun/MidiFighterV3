@@ -12,6 +12,6 @@ class Elements(ElementsBase):
 
         self.add_button(3, "View_Cycle_Button", channel=1, msg_type=MIDI_CC_TYPE)
 
-        self.add_encoder_matrix([[0, 1, 12, 13, 14, 15]], "Device_Controls", is_feedback_enabled=True)
+        self.add_encoder_matrix([[0, 1, 12, 13, 14, 15, 48, 49, 50, 51, 52, 53]], "Device_Controls", is_feedback_enabled=True)
         self.add_encoder_matrix([[8, 9, 10, 11, 2]], "looper_volume_controls", channels=0, is_feedback_enabled=True)
         self.add_button_matrix([[8, 9, 10, 11, 2]], "reset_channel_buttons", channels=1)

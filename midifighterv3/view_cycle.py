@@ -52,32 +52,8 @@ class ViewCycleComponent(Component):
 
     @view_cycle_button.pressed
     def cycle_view(self, _button):
-        self.update_view_state(self.application.view)
-        new_state = self.view_state + 1
-        if new_state >= len(self.valid_views):
-            new_state = 0
-
-        desired_state = self.valid_views[new_state]
-        if desired_state[0]:
-            self.application.view.show_view('Detail/Clip')
-        else:
-            self.application.view.hide_view('Detail/Clip')
-
-        if desired_state[1]:
-            self.application.view.show_view('Detail/DeviceChain')
-        else:
-            self.application.view.hide_view('Detail/DeviceChain')
-
-        if not desired_state[0] and not desired_state[1]:
-            self.application.view.hide_view('Detail')
-
-        if desired_state[2]:
-            self.application.view.show_view('Browser')
-        else:
-            self.application.view.hide_view('Browser')
-
-        if new_state == 0:
-            self.fold_songs(self.song)
-
-        self.last_time_cycle_pressed = time.time()
-
+        current_track = self.song.view.selected_track
+        if not liveobj_valid(current_track):
+            return
+        if current_track.is_foldable:
+            current_track.fold_state = not current_track.fold_state

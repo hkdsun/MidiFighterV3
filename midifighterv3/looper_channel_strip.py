@@ -29,11 +29,13 @@ class LooperChannelStripComponent(ChannelStripComponentBase):
 
     @listens_group("value")
     def __on_fx_values_changed(self, param):
+        # Parameters starting with "Macro " are the unassigned knobs in the macro device
         if not param.name.startswith("Macro ") and param.value != param.default_value:
-            logger.info("FX values changed from defaults for param %s", param.name)
             self.reset_channel_button.color = 79
 
-    def reset_param(self, param, reset_value=0):
+    def reset_param(self, param, reset_value=None):
+        if reset_value is None:
+            reset_value = param.default_value
         if param.state in [0, 1]: # It can be changed
             param.value = reset_value
 
@@ -52,7 +54,7 @@ class LooperChannelStripComponent(ChannelStripComponentBase):
     def reset_channel_fx(self):
         self.reset_param(self._track.mixer_device.panning)
         for send in self._track.mixer_device.sends:
-            self.reset_param(send)
+            self.reset_param(send, reset_value=0)
         device = self.macro_device()
         if device:
                 for param in device.parameters[1:]: # Excludes the first parameter (device on/off)
