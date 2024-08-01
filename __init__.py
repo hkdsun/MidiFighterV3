@@ -33,18 +33,15 @@ def create_mappings(control_surface):
     mappings["TrackNavigation"] = dict(
         scroll_encoder="track_navigation_encoder",
     )
-    mappings["Transport"] = dict(
-        play_button="play_button",
-        stop_button="stop_button",
-    )
     mappings["ViewCycle"] = dict(
         view_cycle_button="view_cycle_button",
     )
     mappings["Zooming"] = dict(
+        play_button="play_button",
+        scrub_encoder="scrub_encoder",
         zoom_encoder="zoom_encoder",
-        scroll_encoder="scroll_encoder",
-        vertical_zoom_encoder="vertical_zoom_encoder",
         vertical_scroll_encoder="vertical_scroll_encoder",
+        vertical_zoom_encoder="vertical_zoom_encoder",
     )
 
 

@@ -18,10 +18,9 @@ class Elements(ElementsBase):
         self.add_button_matrix([[8, 9, 10, 11, 2]], "reset_channel_buttons", channels=1)
 
         self.add_button(47, "play_button", channel=1, msg_type=MIDI_CC_TYPE)
-        self.add_button(46, "stop_button", channel=1, msg_type=MIDI_CC_TYPE)
 
-        self.add_encoder(47, "scroll_encoder", channel=0, msg_type=MIDI_CC_TYPE, map_mode=MapMode.LinearBinaryOffset)
+        self.add_encoder(47, "scrub_encoder", channel=0, msg_type=MIDI_CC_TYPE, map_mode=MapMode.LinearBinaryOffset)
         self.add_encoder(46, "zoom_encoder", channel=0, msg_type=MIDI_CC_TYPE, map_mode=MapMode.LinearBinaryOffset)
-        self.add_encoder(45, "vertical_zoom_encoder", channel=0, msg_type=MIDI_CC_TYPE, map_mode=MapMode.LinearBinaryOffset)
-        self.add_encoder(44, "vertical_scroll_encoder", channel=0, msg_type=MIDI_CC_TYPE, map_mode=MapMode.LinearBinaryOffset)
+        self.add_encoder(45, "vertical_scroll_encoder", channel=0, msg_type=MIDI_CC_TYPE, map_mode=MapMode.LinearBinaryOffset)
+        self.add_encoder(44, "vertical_zoom_encoder", channel=0, msg_type=MIDI_CC_TYPE, map_mode=MapMode.LinearBinaryOffset)
 
