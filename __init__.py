@@ -43,6 +43,8 @@ def create_mappings(control_surface):
     mappings["Zooming"] = dict(
         zoom_encoder="zoom_encoder",
         scroll_encoder="scroll_encoder",
+        vertical_zoom_encoder="vertical_zoom_encoder",
+        vertical_scroll_encoder="vertical_scroll_encoder",
     )
 
 

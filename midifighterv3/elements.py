@@ -22,4 +22,6 @@ class Elements(ElementsBase):
 
         self.add_encoder(47, "scroll_encoder", channel=0, msg_type=MIDI_CC_TYPE, map_mode=MapMode.LinearBinaryOffset)
         self.add_encoder(46, "zoom_encoder", channel=0, msg_type=MIDI_CC_TYPE, map_mode=MapMode.LinearBinaryOffset)
+        self.add_encoder(45, "vertical_zoom_encoder", channel=0, msg_type=MIDI_CC_TYPE, map_mode=MapMode.LinearBinaryOffset)
+        self.add_encoder(44, "vertical_scroll_encoder", channel=0, msg_type=MIDI_CC_TYPE, map_mode=MapMode.LinearBinaryOffset)
 
