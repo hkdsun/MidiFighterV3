@@ -33,9 +33,19 @@ def create_mappings(control_surface):
     mappings["TrackNavigation"] = dict(
         scroll_encoder="track_navigation_encoder",
     )
+    mappings["Transport"] = dict(
+        play_button="play_button",
+        stop_button="stop_button",
+    )
     mappings["ViewCycle"] = dict(
         view_cycle_button="view_cycle_button",
     )
+    mappings["Zooming"] = dict(
+        zoom_encoder="zoom_encoder",
+        scroll_encoder="scroll_encoder",
+    )
+
+
     return mappings
 
 class Specification(ControlSurfaceSpecification):
@@ -48,6 +58,7 @@ class Specification(ControlSurfaceSpecification):
         'TrackNavigation': midifighterv3.TrackNavigationComponent,
         'Mixer': partial(midifighterv3.MixerComponent, channel_strip_component_type=midifighterv3.LooperChannelStripComponent),
         'ViewCycle': midifighterv3.ViewCycleComponent,
+        'Zooming': midifighterv3.ZoomingComponent,
     }
 
 def create_instance(c_instance):

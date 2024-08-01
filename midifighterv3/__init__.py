@@ -7,3 +7,4 @@ from .mixer import MixerComponent
 from .view_cycle import ViewCycleComponent
 from .looper_session_ring import LooperSessionRingComponent
 from .looper_channel_strip import LooperChannelStripComponent
+from .zooming import ZoomingComponent
