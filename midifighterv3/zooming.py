@@ -36,18 +36,33 @@ class ZoomingComponent(Component):
   vertical_zoom_encoder = EncoderControl()
   zoom_encoder = EncoderControl()
 
-
   play_button = ButtonControl()
+  cycle_view_button = ButtonControl()
 
   def __init__(self, *a, **k):
     super(ZoomingComponent, self).__init__(*a, **k)
 
+  @cycle_view_button.pressed
+  def cycle_view_button(self, button):
+    if self.application.view.is_view_visible("Session"):
+      self.application.view.focus_view("Arranger")
+    else:
+      self.application.view.focus_view("Session")
+
   @play_button.pressed
   def play_button(self, button):
-    if self.song.is_playing:
-      self.song.stop_playing()
-    else:
-      self.song.play_selection()
+    if self.application.view.is_view_visible("Session"):
+        current_track = self.song.view.selected_track
+        if not liveobj_valid(current_track):
+            return
+        if current_track.is_foldable:
+            current_track.fold_state = not current_track.fold_state
+        return
+    else: # Arrangement
+      if self.song.is_playing:
+        self.song.stop_playing()
+      else:
+        self.song.play_selection()
 
   @zoom_encoder.value
   def zoom_encoder(self, value, encoder):
@@ -75,7 +90,14 @@ class ZoomingComponent(Component):
 
   @scrub_encoder.value
   def scrub_encoder(self, value, encoder):
-    if value > 0:
-      self.song.scrub_by(1)
-    else:
-      self.song.scrub_by(-1)
+    if self.application.view.is_view_visible("Session"):
+      nav = Live.Application.Application.View.NavDirection
+      if value > 0:
+        self.application.view.scroll_view(nav.right, "", False)
+      else:
+        self.application.view.scroll_view(nav.left, "", False)
+    else: # Arrangement view
+      if value > 0:
+        self.song.scrub_by(1)
+      else:
+        self.song.scrub_by(-1)

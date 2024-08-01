@@ -24,17 +24,9 @@ def create_mappings(control_surface):
     mappings["Mixer"] = dict(
         target_track_send_a_control="send_a_encoder",
         target_track_send_b_control="send_b_encoder",
-        target_track_send_c_control="send_c_encoder",
-        target_track_send_d_control="send_d_encoder",
         target_track_macro_controls="device_controls",
         volume_controls="looper_volume_controls",
         reset_channel_buttons="reset_channel_buttons",
-    )
-    mappings["TrackNavigation"] = dict(
-        scroll_encoder="track_navigation_encoder",
-    )
-    mappings["ViewCycle"] = dict(
-        view_cycle_button="view_cycle_button",
     )
     mappings["Zooming"] = dict(
         play_button="play_button",
@@ -42,9 +34,8 @@ def create_mappings(control_surface):
         zoom_encoder="zoom_encoder",
         vertical_scroll_encoder="vertical_scroll_encoder",
         vertical_zoom_encoder="vertical_zoom_encoder",
+        cycle_view_button="cycle_view_button",
     )
-
-
     return mappings
 
 class Specification(ControlSurfaceSpecification):
