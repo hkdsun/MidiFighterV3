@@ -24,13 +24,10 @@ class Elements(ElementsBase):
             11, # Tube
         ]], "Device_Controls", is_feedback_enabled=True)
 
-        self.add_button(12, "cycle_view_button", channel=1, msg_type=MIDI_CC_TYPE)
         self.add_encoder(12, "vertical_zoom_encoder", channel=0, msg_type=MIDI_CC_TYPE, map_mode=MapMode.LinearBinaryOffset)
-
-        self.add_button(13, "cycle_view_button", channel=1, msg_type=MIDI_CC_TYPE)
         self.add_encoder(13, "vertical_scroll_encoder", channel=0, msg_type=MIDI_CC_TYPE, map_mode=MapMode.LinearBinaryOffset)
 
-        self.add_button(14, "play_button", channel=1, msg_type=MIDI_CC_TYPE)
+        self.add_button(14, "cycle_view_button", channel=1, msg_type=MIDI_CC_TYPE)
         self.add_encoder(14, "zoom_encoder", channel=0, msg_type=MIDI_CC_TYPE, map_mode=MapMode.LinearBinaryOffset)
 
         self.add_button(15, "play_button", channel=1, msg_type=MIDI_CC_TYPE)
