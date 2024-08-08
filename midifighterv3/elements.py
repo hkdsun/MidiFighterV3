@@ -24,16 +24,17 @@ class Elements(ElementsBase):
             11, # Tube
         ]], "Device_Controls", is_feedback_enabled=True)
 
-        self.add_encoder(12, "vertical_zoom_encoder", channel=0, msg_type=MIDI_CC_TYPE, map_mode=MapMode.LinearBinaryOffset)
-        self.add_encoder(13, "vertical_scroll_encoder", channel=0, msg_type=MIDI_CC_TYPE, map_mode=MapMode.LinearBinaryOffset)
+        self.add_encoder(12, "nav_encoder_1", channel=0, msg_type=MIDI_CC_TYPE, map_mode=MapMode.LinearBinaryOffset)
+        self.add_encoder(13, "nav_encoder_2", channel=0, msg_type=MIDI_CC_TYPE, map_mode=MapMode.LinearBinaryOffset)
+        self.add_encoder(14, "nav_encoder_3", channel=0, msg_type=MIDI_CC_TYPE, map_mode=MapMode.LinearBinaryOffset)
+        self.add_encoder(15, "nav_encoder_4", channel=0, msg_type=MIDI_CC_TYPE, map_mode=MapMode.LinearBinaryOffset)
 
-        self.add_button(14, "cycle_view_button", channel=1, msg_type=MIDI_CC_TYPE)
-        self.add_encoder(14, "zoom_encoder", channel=0, msg_type=MIDI_CC_TYPE, map_mode=MapMode.LinearBinaryOffset)
-
-        self.add_button(15, "play_button", channel=1, msg_type=MIDI_CC_TYPE)
-        self.add_encoder(15, "scrub_encoder", channel=0, msg_type=MIDI_CC_TYPE, map_mode=MapMode.LinearBinaryOffset)
+        self.add_button(12, "nav_button_1", channel=1, msg_type=MIDI_CC_TYPE)
+        self.add_button(13, "nav_button_2", channel=1, msg_type=MIDI_CC_TYPE)
+        self.add_button(14, "nav_button_3", channel=1, msg_type=MIDI_CC_TYPE)
+        self.add_button(15, "nav_button_4", channel=1, msg_type=MIDI_CC_TYPE)
 
         # Bank 2 (Loopers)
-        self.add_encoder_matrix([[16, 17, 18, 19, 47]], "looper_volume_controls", channels=0, is_feedback_enabled=True)
-        self.add_button_matrix([[16, 17, 18, 19, 47]], "reset_channel_buttons", channels=1)
+        self.add_encoder_matrix([[16, 17, 18, 19, 47]], "looper_encoders", channels=0, is_feedback_enabled=True)
+        self.add_button_matrix([[16, 17, 18, 19, 47]], "looper_buttons", channels=1)
 

@@ -20,5 +20,4 @@ class MixerComponent(MixerComponentBase):
 
     @listens('target_track')
     def __on_target_track_changed(self):
-        logger.info("Target track changed")
         self._track_macros.set_track(self._target_track.target_track)

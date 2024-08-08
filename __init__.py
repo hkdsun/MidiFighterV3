@@ -25,16 +25,21 @@ def create_mappings(control_surface):
         target_track_send_a_control="send_a_encoder",
         target_track_send_b_control="send_b_encoder",
         target_track_macro_controls="device_controls",
-        volume_controls="looper_volume_controls",
-        reset_channel_buttons="reset_channel_buttons",
+        volume_controls="looper_encoders",
+        reset_channel_buttons="looper_buttons",
     )
     mappings["Zooming"] = dict(
-        play_button="play_button",
-        scrub_encoder="scrub_encoder",
-        zoom_encoder="zoom_encoder",
-        vertical_scroll_encoder="vertical_scroll_encoder",
-        vertical_zoom_encoder="vertical_zoom_encoder",
-        cycle_view_button="cycle_view_button",
+        vertical_zoom_push_button="nav_button_1",
+        vertical_zoom_encoder="nav_encoder_1",
+        track_encoder_push_button="nav_button_3",
+        track_encoder="nav_encoder_3",
+        scrub_encoder_push_button="nav_button_4",
+        scrub_encoder="nav_encoder_4",
+    )
+    mappings["Device_Navigation"] = dict(
+        scroll_encoder="nav_encoder_2",
+    )
+    mappings["View_Control"] = dict(
     )
     return mappings
 
@@ -106,4 +111,5 @@ class MidiFighterV3(ControlSurface):
 
     @listens("selected_track")
     def __on_selected_track_changed(self):
-        logger.info(f"selected track changed: {self.song.view.selected_track.name}")
+        return
+        # logger.info(f"selected track changed: {self.song.view.selected_track.name}")

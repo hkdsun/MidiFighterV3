@@ -25,10 +25,11 @@ class LooperChannelStripComponent(ChannelStripComponentBase):
 
     @listens("mixer_device.volume.value")
     def __on_volume_value_changed(self):
-        if self._track.name == "Master" or self._track == "Main":
+        if self._track.name == "Master" or self._track.name == "Main":
             return
+        if not self._track.is_visible:
+            self._track.group_track.fold_state = False
         self.song.view.selected_track = self._track
-        logger.info("Volume control touched for track: %s" % self._track.name)
 
     @listens_group("value")
     def __on_fx_values_changed(self, param):
