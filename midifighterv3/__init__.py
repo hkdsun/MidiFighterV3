@@ -2,9 +2,10 @@ from .skin import Skin
 from .colors import Rgb
 from .elements import Elements
 from .track_navigation import TrackNavigationComponent
-from .simple_device_navigation import SimpleDeviceNavigationComponent
 from .mixer import MixerComponent
 from .view_cycle import ViewCycleComponent
 from .looper_session_ring import LooperSessionRingComponent
 from .looper_channel_strip import LooperChannelStripComponent
 from .zooming import ZoomingComponent
+from .transport import TransportComponent
+from .device_navigation import DeviceNavigationComponent

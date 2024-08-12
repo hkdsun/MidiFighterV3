@@ -3,8 +3,9 @@ import logging
 import os
 import traceback
 import Live
+import time
 
-from ableton.v2.base import listens, find_if
+from ableton.v2.base import listens, find_if, task
 from ableton.v3.control_surface import (
     ControlSurface,
     ControlSurfaceSpecification,
@@ -24,9 +25,19 @@ def create_mappings(control_surface):
     mappings["Mixer"] = dict(
         target_track_send_a_control="send_a_encoder",
         target_track_send_b_control="send_b_encoder",
-        target_track_macro_controls="device_controls",
+        target_track_send_c_control="send_c_encoder",
+        target_track_send_d_control="send_d_encoder",
+        target_track_pan_control="aux_encoder_4",
         volume_controls="looper_encoders",
         reset_channel_buttons="looper_buttons",
+    )
+    mappings["Transport"] = dict(
+        tempo_coarse_encoder="aux_encoder_1",
+        loop_start_encoder="aux_encoder_2",
+        loop_button="aux_button_2",
+        loop_length_encoder="aux_encoder_3",
+        punch_in_button="aux_button_3",
+        punch_out_button="aux_button_3",
     )
     mappings["Zooming"] = dict(
         vertical_zoom_push_button="nav_button_1",
@@ -49,11 +60,12 @@ class Specification(ControlSurfaceSpecification):
     session_ring_component_type = midifighterv3.LooperSessionRingComponent
     create_mappings_function = create_mappings
     component_map = {
-        'DeviceNavigation': midifighterv3.SimpleDeviceNavigationComponent,
         'TrackNavigation': midifighterv3.TrackNavigationComponent,
         'Mixer': partial(midifighterv3.MixerComponent, channel_strip_component_type=midifighterv3.LooperChannelStripComponent),
+        'Device_Navigation': midifighterv3.DeviceNavigationComponent,
         'ViewCycle': midifighterv3.ViewCycleComponent,
         'Zooming': midifighterv3.ZoomingComponent,
+        'Transport': midifighterv3.TransportComponent,
     }
 
 def create_instance(c_instance):
@@ -66,6 +78,12 @@ class MidiFighterV3(ControlSurface):
         self.log_level = "info"
 
         self.start_logging()
+        self._hide_browser_task = self._tasks.add(task.sequence(task.wait(5), task.run(self._hide_browser)))
+        self._MidiFighterV3__on_browser_is_shown.subject = self.application.view
+        self._browser_last_shown = time.monotonic()
+
+        self._have_set_default_view = False
+        self._set_default_view_task = self._tasks.add(task.run(self._set_default_view))
 
         self.show_message("midifighterv3: init mate")
         logger.info("midifighterv3: init started ...")
@@ -73,6 +91,31 @@ class MidiFighterV3(ControlSurface):
     def setup(self):
         super().setup()
         self.init()
+
+    def _set_default_view(self):
+        if self._have_set_default_view:
+            return
+        if not self.application.view.is_view_visible("Session") and not self.application.view.is_view_visible("Arranger"):
+            logger.info("Application is invisble still, trying again later")
+            self.schedule_message(5, self._set_default_view_task.restart)
+            return
+        self.application.view.hide_view("Detail/Clip")
+        self.application.view.hide_view("Detail/DeviceChain")
+        self.application.view.hide_view("Detail")
+        self.application.view.hide_view("Browser")
+        self.application.view.show_view("Detail/DeviceChain")
+        self._have_set_default_view = True
+        logger.info("Default view set")
+
+    @listens("is_view_visible", "Browser")
+    def __on_browser_is_shown(self):
+        self._browser_last_shown = time.monotonic()
+
+    def _hide_browser(self):
+        if time.monotonic() - self._browser_last_shown < 60:
+            return
+        self.application.view.hide_view("Browser")
+        self.schedule_message(5, self._hide_browser_task.restart)
 
     def init(self):
         logger.info("init started:")
@@ -113,3 +156,4 @@ class MidiFighterV3(ControlSurface):
     def __on_selected_track_changed(self):
         return
         # logger.info(f"selected track changed: {self.song.view.selected_track.name}")
+

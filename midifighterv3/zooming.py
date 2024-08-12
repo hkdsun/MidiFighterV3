@@ -2,9 +2,9 @@ from __future__ import absolute_import, print_function, unicode_literals
 from functools import partial
 from itertools import chain, islice, repeat
 from math import ceil
-from ableton.v2.base import compose, find_if, listens, listens_group, liveobj_valid, task
+from ableton.v2.base import compose, find_if, listens, listens_group, liveobj_valid, task, move_current_song_time
 from ableton.v3.control_surface import Component
-from ableton.v3.control_surface.controls import EncoderControl, ButtonControl
+from ableton.v3.control_surface.controls import EncoderControl, ButtonControl, StepEncoderControl
 import Live
 import time
 
@@ -23,7 +23,6 @@ def rate_limit(max_calls, first_period, repeat_period=None):
           nonlocal calls, next_reset
           is_first_call = kwargs.pop('first_call', False)
           period = first_period if is_first_call else repeat_period
-          logger.info("Calls: %s, Period: %s", calls, period)
           if time.monotonic() > next_reset:
               calls = 0
               next_reset = time.monotonic() + period
@@ -35,13 +34,13 @@ def rate_limit(max_calls, first_period, repeat_period=None):
   return decorator
 
 class ZoomingComponent(Component):
-  vertical_zoom_encoder = EncoderControl()
+  vertical_zoom_encoder = StepEncoderControl(num_steps=1)
   vertical_zoom_push_button = ButtonControl()
 
   scrub_encoder = EncoderControl()
   scrub_encoder_push_button = ButtonControl()
 
-  track_encoder = EncoderControl()
+  track_encoder = StepEncoderControl(num_steps=15)
   track_encoder_push_button = ButtonControl()
   track_encoder_ignore_delay = 0.8
 
@@ -49,14 +48,12 @@ class ZoomingComponent(Component):
     super(ZoomingComponent, self).__init__(*a, **k)
     self._vertical_zoom_encoder_held = False
     self._track_encoder_held = False
-    self._scrub_encoder_held = False
     self.cycle_through_best_views = rate_limit(1, 0.8, repeat_period=0.2)(self._cycle_through_best_views)
-    self.last_time_track_encoder_was_cycling_views = time.monotonic()
+    self._last_time_track_encoder_was_cycling_views = time.monotonic()
 
   @track_encoder_push_button.pressed
   def track_encoder_push_button(self, button):
     self._track_encoder_held = True
-    self._view_cycle_first_call = True
 
   @track_encoder_push_button.released
   def track_encoder_push_button(self, button):
@@ -72,25 +69,32 @@ class ZoomingComponent(Component):
   @track_encoder.value
   def track_encoder(self, value, encoder):
     if self._track_encoder_held:
-      self.cycle_through_best_views(value, first_call=self._view_cycle_first_call)
-      self._view_cycle_first_call = False
-      self._last_time_track_encoder_was_cycling_views = time.monotonic()
+      self.scroll_tracks(value)
     else:
-      if time.monotonic() - self._last_time_track_encoder_was_cycling_views > self.track_encoder_ignore_delay:
-        self.scroll_tracks(value)
+      if self._vertical_zoom_encoder_held:
+        self.cycle_through_best_views(value)
+      else:
+        self.horizontally_zoom(value)
+
+  def horizontally_zoom(self, value):
+    nav = Live.Application.Application.View.NavDirection
+    if value > 0:
+      self.application.view.zoom_view(nav.right, "", self._vertical_zoom_encoder_held)
+    else:
+      self.application.view.zoom_view(nav.left, "", self._vertical_zoom_encoder_held)
 
   def scroll_tracks(self, value):
     nav = Live.Application.Application.View.NavDirection
     if self.application.view.is_view_visible("Session"):
       if value > 0:
-        self.application.view.scroll_view(nav.right, "", self._track_encoder_held)
+        self.application.view.scroll_view(nav.right, "", self._vertical_zoom_encoder_held)
       else:
-        self.application.view.scroll_view(nav.left, "", self._track_encoder_held)
+        self.application.view.scroll_view(nav.left, "", self._vertical_zoom_encoder_held)
     else:
       if value > 0:
-        self.application.view.scroll_view(nav.down, "", self._track_encoder_held)
+        self.application.view.scroll_view(nav.down, "", self._vertical_zoom_encoder_held)
       else:
-        self.application.view.scroll_view(nav.up, "", self._track_encoder_held)
+        self.application.view.scroll_view(nav.up, "", self._vertical_zoom_encoder_held)
 
   @vertical_zoom_push_button.pressed
   def vertical_zoom_push_button(self, button):
@@ -102,11 +106,14 @@ class ZoomingComponent(Component):
 
   @vertical_zoom_encoder.value
   def vertical_zoom_encoder(self, value, encoder):
+    if self._vertical_zoom_encoder_held:
+      return
     nav = Live.Application.Application.View.NavDirection
     if value > 0:
-      self.application.view.zoom_view(nav.down, "", self._vertical_zoom_encoder_held)
+      self.application.view.zoom_view(nav.down, "", self._track_encoder_held)
     else:
-      self.application.view.zoom_view(nav.up, "", self._vertical_zoom_encoder_held)
+      self.application.view.zoom_view(nav.up, "", self._track_encoder_held)
+
 
   @scrub_encoder_push_button.pressed
   def scrub_encoder_push_button(self, button):
@@ -132,16 +139,19 @@ class ZoomingComponent(Component):
       else:
         self.application.view.scroll_view(nav.left, "", self._vertical_zoom_encoder_held)
     else: # Arrangement view
+      delta = 1 if self._vertical_zoom_encoder_held else 4
       if value > 0:
-        self.song.scrub_by(1)
+        move_current_song_time(self.song, delta)
       else:
-        self.song.scrub_by(-1)
+        move_current_song_time(self.song, -delta)
+
 
   valid_views = [
       # clip, device, browser
       (False, True, False),
-      (True, False, False),
+      (False, False, True),
       (False, False, False),
+      (True, False, False),
   ]
 
   def set_application_view(self, is_detail_clip_view_visible, is_detail_device_chain_view_visible, is_browser_view_visible):
