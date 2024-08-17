@@ -9,10 +9,11 @@ def looper_tracks_to_use(song):
 
     for track in song.tracks:
         if track.name == "Vocal In":
-            looper_tracks.append(track)
+            looper_tracks = [track] + looper_tracks
 
     if len(looper_tracks) == 0:
         return song.visible_tracks
+
     return looper_tracks
 
 class LooperSessionRingComponent(SessionRingComponentBase):

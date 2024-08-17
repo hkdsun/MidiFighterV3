@@ -2,7 +2,7 @@ from __future__ import absolute_import, print_function, unicode_literals
 from functools import partial
 from itertools import chain, islice, repeat
 from math import ceil
-from ableton.v2.base import compose, find_if, listens, listens_group, liveobj_valid, task, move_current_song_time
+from ableton.v2.base import compose, find_if, listens, listens_group, liveobj_valid, task
 from ableton.v3.control_surface import Component
 from ableton.v3.control_surface.controls import EncoderControl, ButtonControl, StepEncoderControl
 import Live
@@ -33,11 +33,22 @@ def rate_limit(max_calls, first_period, repeat_period=None):
       return wrapper
   return decorator
 
+
+def move_current_song_time(song, delta, truncate_to_bar=True):
+    new_time = max(0, song.current_song_time + delta)
+    if truncate_to_bar:
+        new_time = int(new_time)
+        new_time = max(0, new_time - (new_time % 4))
+    logger.info("Current song time: %s, new time: %s", song.current_song_time, new_time)
+    song.current_song_time = new_time
+    if not song.is_playing:
+        song.start_time = new_time
+
 class ZoomingComponent(Component):
   vertical_zoom_encoder = StepEncoderControl(num_steps=1)
   vertical_zoom_push_button = ButtonControl()
 
-  scrub_encoder = EncoderControl()
+  scrub_encoder = StepEncoderControl(num_steps=8)
   scrub_encoder_push_button = ButtonControl()
 
   track_encoder = StepEncoderControl(num_steps=15)
@@ -140,10 +151,12 @@ class ZoomingComponent(Component):
         self.application.view.scroll_view(nav.left, "", self._vertical_zoom_encoder_held)
     else: # Arrangement view
       delta = 1 if self._vertical_zoom_encoder_held else 4
+      delta = 16 if self._track_encoder_held else delta
+      truncate_to_bar = not self._vertical_zoom_encoder_held
       if value > 0:
-        move_current_song_time(self.song, delta)
+        move_current_song_time(self.song, delta, truncate_to_bar=truncate_to_bar)
       else:
-        move_current_song_time(self.song, -delta)
+        move_current_song_time(self.song, -delta, truncate_to_bar=truncate_to_bar)
 
 
   valid_views = [

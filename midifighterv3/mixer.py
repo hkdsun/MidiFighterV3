@@ -22,7 +22,6 @@ class MixerComponent(MixerComponentBase):
     def __on_target_track_changed(self):
         self._track_macros.set_track(self._target_track.target_track)
         default_device = None
-        logger.info('Looking for Macro Device')
         for device in self._target_track.target_track.devices:
             if device.name == 'Macro Filter+EQ':
                 default_device = device

@@ -33,6 +33,6 @@ class Elements(ElementsBase):
         self.add_button(15, "nav_button_4", channel=1, msg_type=MIDI_CC_TYPE)
 
         # Bank 2 (Loopers)
-        self.add_encoder_matrix([[16, 17, 18, 19, 8]], "looper_encoders", channels=0, is_feedback_enabled=True)
-        self.add_button_matrix([[16, 17, 18, 19, 8]], "looper_buttons", channels=1)
+        self.add_encoder_matrix([[8, 16, 17, 18, 19]], "looper_encoders", channels=0, is_feedback_enabled=True)
+        self.add_button_matrix([[8, 16, 17, 18, 19]], "looper_buttons", channels=1)
 
