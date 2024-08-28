@@ -72,7 +72,7 @@ class ZoomingComponent(Component):
 
   @track_encoder_push_button.released_immediately
   def track_encoder_push_button(self, button):
-    if self.application.view.is_view_visible("Session"):
+    if self.application.view.focused_document_view == "Session":
       self.application.view.focus_view("Arranger")
     else:
       self.application.view.focus_view("Session")
@@ -90,22 +90,22 @@ class ZoomingComponent(Component):
   def horizontally_zoom(self, value):
     nav = Live.Application.Application.View.NavDirection
     if value > 0:
-      self.application.view.zoom_view(nav.right, "", self._vertical_zoom_encoder_held)
+      self.application.view.zoom_view(nav.right, self.application.view.focused_document_view, self._vertical_zoom_encoder_held)
     else:
-      self.application.view.zoom_view(nav.left, "", self._vertical_zoom_encoder_held)
+      self.application.view.zoom_view(nav.left, self.application.view.focused_document_view, self._vertical_zoom_encoder_held)
 
   def scroll_tracks(self, value):
     nav = Live.Application.Application.View.NavDirection
-    if self.application.view.is_view_visible("Session"):
+    if self.application.view.focused_document_view == "Session":
       if value > 0:
-        self.application.view.scroll_view(nav.right, "", self._vertical_zoom_encoder_held)
+        self.application.view.scroll_view(nav.right, self.application.view.focused_document_view, self._vertical_zoom_encoder_held)
       else:
-        self.application.view.scroll_view(nav.left, "", self._vertical_zoom_encoder_held)
+        self.application.view.scroll_view(nav.left, self.application.view.focused_document_view, self._vertical_zoom_encoder_held)
     else:
       if value > 0:
-        self.application.view.scroll_view(nav.down, "", self._vertical_zoom_encoder_held)
+        self.application.view.scroll_view(nav.down, self.application.view.focused_document_view, self._vertical_zoom_encoder_held)
       else:
-        self.application.view.scroll_view(nav.up, "", self._vertical_zoom_encoder_held)
+        self.application.view.scroll_view(nav.up, self.application.view.focused_document_view, self._vertical_zoom_encoder_held)
 
   @vertical_zoom_push_button.pressed
   def vertical_zoom_push_button(self, button):
@@ -121,14 +121,14 @@ class ZoomingComponent(Component):
       return
     nav = Live.Application.Application.View.NavDirection
     if value > 0:
-      self.application.view.zoom_view(nav.down, "", self._track_encoder_held)
+      self.application.view.zoom_view(nav.down, self.application.view.focused_document_view, self._track_encoder_held)
     else:
-      self.application.view.zoom_view(nav.up, "", self._track_encoder_held)
+      self.application.view.zoom_view(nav.up, self.application.view.focused_document_view, self._track_encoder_held)
 
 
   @scrub_encoder_push_button.pressed
   def scrub_encoder_push_button(self, button):
-    if self.application.view.is_view_visible("Session"):
+    if self.application.view.focused_document_view == "Session":
         current_track = self.song.view.selected_track
         if not liveobj_valid(current_track):
             return
@@ -143,13 +143,13 @@ class ZoomingComponent(Component):
 
   @scrub_encoder.value
   def scrub_encoder(self, value, encoder):
-    if self.application.view.is_view_visible("Session"):
+    if self.application.view.focused_document_view == "Session":
       nav = Live.Application.Application.View.NavDirection
       if value > 0:
-        self.application.view.scroll_view(nav.right, "", self._vertical_zoom_encoder_held)
+        self.application.view.scroll_view(nav.right, self.application.view.focused_document_view, self._vertical_zoom_encoder_held)
       else:
-        self.application.view.scroll_view(nav.left, "", self._vertical_zoom_encoder_held)
-    else: # Arrangement view
+        self.application.view.scroll_view(nav.left, self.application.view.focused_document_view, self._vertical_zoom_encoder_held)
+    elif self.application.view.focused_document_view == "Arranger":
       delta = 1 if self._vertical_zoom_encoder_held else 4
       delta = 16 if self._track_encoder_held else delta
       truncate_to_bar = not self._vertical_zoom_encoder_held
@@ -157,14 +157,16 @@ class ZoomingComponent(Component):
         move_current_song_time(self.song, delta, truncate_to_bar=truncate_to_bar)
       else:
         move_current_song_time(self.song, -delta, truncate_to_bar=truncate_to_bar)
+    else:
+      raise ValueError("Unreachable view: %s" % self.application.view.focused_document_view)
 
 
   valid_views = [
       # clip, device, browser
       (False, True, False),
-      (False, False, True),
-      (False, False, False),
       (True, False, False),
+      (False, False, False),
+      (False, False, True),
   ]
 
   def set_application_view(self, is_detail_clip_view_visible, is_detail_device_chain_view_visible, is_browser_view_visible):
