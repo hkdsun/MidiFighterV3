@@ -12,7 +12,7 @@ class Elements(ElementsBase):
         self.add_encoder(2, "send_c_encoder", channel=0, msg_type=MIDI_CC_TYPE, is_feedback_enabled=True)
         self.add_encoder(3, "send_d_encoder", channel=0, msg_type=MIDI_CC_TYPE, is_feedback_enabled=True)
 
-        self.add_encoder(4,  "aux_encoder_1", channel=0, msg_type=MIDI_CC_TYPE, map_mode=MapMode.Absolute)
+        self.add_encoder(4,  "aux_encoder_1", channel=0, msg_type=MIDI_CC_TYPE, map_mode=MapMode.LinearBinaryOffset)
         self.add_encoder(5,  "aux_encoder_2", channel=0, msg_type=MIDI_CC_TYPE, map_mode=MapMode.LinearBinaryOffset)
         self.add_encoder(6,  "aux_encoder_3", channel=0, msg_type=MIDI_CC_TYPE, map_mode=MapMode.LinearBinaryOffset)
         self.add_encoder(7,  "aux_encoder_4", channel=0, msg_type=MIDI_CC_TYPE, map_mode=MapMode.Absolute)
