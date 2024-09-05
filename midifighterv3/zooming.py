@@ -150,6 +150,8 @@ class ZoomingComponent(Component):
       else:
         self.application.view.scroll_view(nav.left, self.application.view.focused_document_view, self._vertical_zoom_encoder_held)
     elif self.application.view.focused_document_view == "Arranger":
+      if self.song.is_playing:
+        self.song.stop_playing() # n.b. avoids loud pops and noises
       delta = 1 if self._vertical_zoom_encoder_held else 4
       delta = 16 if self._track_encoder_held else delta
       truncate_to_bar = not self._vertical_zoom_encoder_held
