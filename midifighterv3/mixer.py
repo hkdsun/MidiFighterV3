@@ -33,4 +33,4 @@ class MixerComponent(MixerComponentBase):
                     break
         if default_device is None:
             return
-        self.song.view.select_device(default_device, False)
+        # self.song.view.select_device(default_device, False)
