@@ -36,19 +36,19 @@ def rate_limit(max_calls, first_period, repeat_period=None):
 
 def move_current_song_time(song, delta, truncate_to_bar=True):
     new_time = max(0, song.current_song_time + delta)
+    logger.info("Current song time: %s, new time: %s", song.current_song_time, new_time)
     if truncate_to_bar:
         new_time = int(new_time)
         new_time = max(0, new_time - (new_time % 4))
-    logger.info("Current song time: %s, new time: %s", song.current_song_time, new_time)
+    logger.info("After truncation: %s", new_time)
     song.current_song_time = new_time
-    if not song.is_playing:
-        song.start_time = new_time
+    song.start_time = new_time
 
 class ZoomingComponent(Component):
   vertical_zoom_encoder = StepEncoderControl(num_steps=1)
   vertical_zoom_push_button = ButtonControl()
 
-  scrub_encoder = StepEncoderControl(num_steps=8)
+  scrub_encoder = StepEncoderControl(num_steps=128)
   scrub_encoder_push_button = ButtonControl()
 
   track_encoder = StepEncoderControl(num_steps=15)
@@ -59,6 +59,7 @@ class ZoomingComponent(Component):
     super(ZoomingComponent, self).__init__(*a, **k)
     self._vertical_zoom_encoder_held = False
     self._track_encoder_held = False
+    self._scrub_encoder_held = False
     self.cycle_through_best_views = rate_limit(1, 0.8, repeat_period=0.2)(self._cycle_through_best_views)
     self._last_time_track_encoder_was_cycling_views = time.monotonic()
 
@@ -125,42 +126,34 @@ class ZoomingComponent(Component):
     else:
       self.application.view.zoom_view(nav.up, self.application.view.focused_document_view, self._track_encoder_held)
 
+  @scrub_encoder_push_button.released
+  def scrub_encoder_push_button(self, button):
+    self._scrub_encoder_held = False
+    self.song.view.follow_song = True
 
   @scrub_encoder_push_button.pressed
   def scrub_encoder_push_button(self, button):
-    if self.application.view.focused_document_view == "Session":
-        current_track = self.song.view.selected_track
-        if not liveobj_valid(current_track):
-            return
-        if current_track.is_foldable:
-            current_track.fold_state = not current_track.fold_state
-        return
-    else: # Arrangement
-      if self.song.is_playing:
-        self.song.stop_playing()
-      else:
-        self.song.play_selection()
+    self._scrub_encoder_held = True
+    self.song.view.follow_song = False
+    self.toggle_playback()
+
+  def toggle_playback(self):
+    if self.song.is_playing:
+      self.song.stop_playing()
+    else:
+      self.song.start_playing()
 
   @scrub_encoder.value
   def scrub_encoder(self, value, encoder):
+    logger.info("Scrub encoder value: %s", value)
     if self.application.view.focused_document_view == "Session":
-      nav = Live.Application.Application.View.NavDirection
-      if value > 0:
-        self.application.view.scroll_view(nav.right, self.application.view.focused_document_view, self._vertical_zoom_encoder_held)
-      else:
-        self.application.view.scroll_view(nav.left, self.application.view.focused_document_view, self._vertical_zoom_encoder_held)
-    elif self.application.view.focused_document_view == "Arranger":
-      if self.song.is_playing:
-        self.song.stop_playing() # n.b. avoids loud pops and noises
-      delta = 1 if self._vertical_zoom_encoder_held else 4
-      delta = 16 if self._track_encoder_held else delta
-      truncate_to_bar = not self._vertical_zoom_encoder_held
-      if value > 0:
-        move_current_song_time(self.song, delta, truncate_to_bar=truncate_to_bar)
-      else:
-        move_current_song_time(self.song, -delta, truncate_to_bar=truncate_to_bar)
+      self.application.view.focus_view("Arranger")
+    delta = 8
+    truncate_to_bar = not self._vertical_zoom_encoder_held
+    if value > 0:
+      move_current_song_time(self.song, delta, truncate_to_bar=truncate_to_bar)
     else:
-      raise ValueError("Unreachable view: %s" % self.application.view.focused_document_view)
+      move_current_song_time(self.song, -delta, truncate_to_bar=truncate_to_bar)
 
 
   valid_views = [

@@ -25,6 +25,7 @@ class LooperChannelStripComponent(ChannelStripComponentBase):
 
     @listens("mixer_device.volume.value")
     def __on_volume_value_changed(self):
+        return
         if self._track.name == "Master" or self._track.name == "Main":
             return
         if not self._track.is_visible:

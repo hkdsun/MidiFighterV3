@@ -32,6 +32,9 @@ class Elements(ElementsBase):
         self.add_button(14, "nav_button_3", channel=1, msg_type=MIDI_CC_TYPE)
         self.add_button(15, "nav_button_4", channel=1, msg_type=MIDI_CC_TYPE)
 
+        self.add_encoder(95, "streamdeck_encoder_4", channel=0, msg_type=MIDI_CC_TYPE, map_mode=MapMode.LinearBinaryOffset)
+        self.add_button(95, "streamdeck_encoder_4_button", channel=1, msg_type=MIDI_CC_TYPE, is_momentary=False)
+
         # Bank 2 (Loopers)
         self.add_encoder_matrix([[8, 16, 17, 18, 19]], "looper_encoders", channels=0, is_feedback_enabled=True)
         self.add_button_matrix([[8, 16, 17, 18, 19]], "looper_buttons", channels=1)

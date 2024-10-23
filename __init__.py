@@ -28,8 +28,8 @@ def create_mappings(control_surface):
         target_track_send_c_control="send_c_encoder",
         target_track_send_d_control="send_d_encoder",
         target_track_pan_control="aux_encoder_4",
-        volume_controls="looper_encoders",
-        reset_channel_buttons="looper_buttons",
+        # volume_controls="looper_encoders",
+        # reset_channel_buttons="looper_buttons",
     )
     mappings["Transport"] = dict(
         tempo_coarse_encoder="aux_encoder_1",
@@ -44,8 +44,8 @@ def create_mappings(control_surface):
         vertical_zoom_encoder="nav_encoder_1",
         track_encoder_push_button="nav_button_3",
         track_encoder="nav_encoder_3",
-        scrub_encoder_push_button="nav_button_4",
-        scrub_encoder="nav_encoder_4",
+        scrub_encoder_push_button="streamdeck_encoder_4_button",
+        scrub_encoder="streamdeck_encoder_4",
     )
     mappings["Device_Navigation"] = dict(
         scroll_encoder="nav_encoder_2",
@@ -104,6 +104,9 @@ class MidiFighterV3(ControlSurface):
         self.application.view.hide_view("Detail")
         self.application.view.hide_view("Browser")
         self.application.view.show_view("Detail/DeviceChain")
+        self.song.arrangement_overdub = False
+        self.song.overdub = False
+        self.song.session_record = False
         self._have_set_default_view = True
         logger.info("Default view set")
 
@@ -112,9 +115,8 @@ class MidiFighterV3(ControlSurface):
         self._browser_last_shown = time.monotonic()
 
     def _hide_browser(self):
-        if time.monotonic() - self._browser_last_shown < 60:
-            return
-        self.application.view.hide_view("Browser")
+        if time.monotonic() - self._browser_last_shown > 15:
+            self.application.view.hide_view("Browser")
         self.schedule_message(5, self._hide_browser_task.restart)
 
     def init(self):
