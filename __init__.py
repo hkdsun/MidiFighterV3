@@ -115,7 +115,7 @@ class MidiFighterV3(ControlSurface):
         self._browser_last_shown = time.monotonic()
 
     def _hide_browser(self):
-        if time.monotonic() - self._browser_last_shown > 15:
+        if time.monotonic() - self._browser_last_shown > 60:
             self.application.view.hide_view("Browser")
         self.schedule_message(5, self._hide_browser_task.restart)
 
